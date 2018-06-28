@@ -18,3 +18,7 @@ RUN curl -k https://${DTR_DOMAIN_COM}/ca -o /usr/local/share/ca-certificates/${D
 
 # Since I've incorporated notary, I'm copying in my Docker EE user bundle
 ADD ucp_bundle /etc/ssl/ucp_bundle/
+
+# Add Jenkins theme files
+ADD theme /var/jenkins_home/war/theme/
+ 
