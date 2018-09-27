@@ -87,6 +87,23 @@ Visit http://jenkins.domain.com to pull up Jenkin's first login, you can access 
 ```
 root@nfsserver:~# cat /nfs/jenkins_home/secrets/initialAdminPassword 
 ```
+# Jenkins configuration notes for Notary
+export DOCKER_CONTENT_TRUST_ROOT_PASSPHRASE="xxxxxxxxxx"
+export DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE="xxxxxxxxxx"
+export NOTARY_DELEGATION_PASSPHRASE="xxxxxxxxxx"
+export NOTARY_OPS="-d ${HOME}/.docker/trust -s https://${DTR_HOST} --tlscacert ${HOME}/.docker/ca.crt"
+export DOCKER_CONTENT_TRUST_SERVER=https://dtr.domain.cmo
+
+## # Update CA
+curl -sSLk https://${DTR_HOST}/ca > ${HOME}/.docker/ca.crt
+
+## # Set Notary Options
+notary ${NOTARY_OPS} key import /etc/ssl/ucp_bundle/key.pem --role targets/releases
+
+## # Sign and push stable
+export DOCKER_CONTENT_TRUST=1
+docker push ${DTR_HOST}/org/repo:tag
+
 
 Enjoy!
 
