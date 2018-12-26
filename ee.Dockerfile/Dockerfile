@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.156-alpine
+FROM jenkins/jenkins:2.156
 USER root
 # Pre-update
 RUN apt-get update \
