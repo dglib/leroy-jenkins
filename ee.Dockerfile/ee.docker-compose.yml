@@ -1,0 +1,54 @@
+version: "3.5"
+services:
+  jenkins:
+    image: dtr.docker.ee/leroy/jenkins:0.15
+    networks:
+      - frontend
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - node.role==manager
+          #- node.platform.os==linux
+      labels:
+        com.docker.lb.hosts: jenkins.apps.docker.ee
+        com.docker.lb.network: frontend
+        com.docker.lb.port: "8080"
+        com.docker.lb.ssl_cert: apps.docker.ee.cert
+        com.docker.lb.ssl_key: apps.docker.ee.key
+        com.docker.lb.redirects: http://jenkins.apps.docker.ee,https://jenkins.apps.docker.ee
+    environment:
+      METADATA: proxy-handles-tls 
+    volumes:
+      - type: volume
+        source: jenkins_home
+        target: /var/jenkins_home
+        read_only: false
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+      - type: bind
+        source: /usr/bin/docker
+        target: /usr/bin/docker
+        read_only: true
+      - type: bind
+        source: /usr/bin/notary
+        target: /usr/bin/notary
+        read_only: true
+
+networks:
+  frontend:
+    driver: overlay
+
+volumes:
+  jenkins_home:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=nfs1,rw
+      device: ":/nfs/global/jenkins_home"
