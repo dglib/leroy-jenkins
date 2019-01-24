@@ -1,4 +1,5 @@
-FROM jenkins/jenkins:latest
+FROM jenkins/jenkins:2.161
+LABEL JENKINS_VER=2.161
 USER root
 # Pre-update
 RUN apt-get update \
