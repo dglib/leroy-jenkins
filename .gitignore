@@ -1,8 +1,2 @@
-# Dont copy my certs
-*.pem
-*.pub
-env.*
 # OSX
 .DS_Store
-beta_*
-ucp_bundle/*
