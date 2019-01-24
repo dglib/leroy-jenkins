@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.156
+FROM jenkins/jenkins:latest
 USER root
 # Pre-update
 RUN apt-get update \
@@ -13,10 +13,8 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/*
 # Give jenkins admin privs, this can come out after testing
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
-# Randomize the build
-RUN date +%s | sha256sum | base64 | head -c 32 ; echo > /.junk
 # Set root's alias string for notary, this will not affect jenkins' user
-RUN echo "alias notary='notary -s https://dtr.docker.ee --trustDir /var/jenkins_home/.docker/trust'" >> /root/.bashrc
+RUN echo "alias notary='notary -s https://dtr.docker.ee -d /var/jenkins_home/.docker/trust'" >> /root/.bashrc
 # Set ${DTR_ADDR}
 ENV DTR_ADDR=dtr.docker.ee
 # Add the CA certificate
@@ -26,4 +24,4 @@ RUN curl -k https://ucp.docker.ee/ca -o /usr/local/share/ca-certificates/ucp.doc
 # Since I've incorporated notary, I'm copying in user bundles
 ADD ucp_bundle /etc/ssl/ucp_bundle/
 # When the container starts, switch to the user jenkkins
-#USER jenkins
+USER jenkins
