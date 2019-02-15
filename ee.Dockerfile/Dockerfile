@@ -1,5 +1,4 @@
-FROM jenkins/jenkins:2.161
-
+FROM jenkins/jenkins:2.164
 USER root
 # Pre-update
 RUN apt-get update \
@@ -25,4 +24,3 @@ RUN curl -k https://ucp.docker.ee/ca -o /usr/local/share/ca-certificates/ucp.doc
 # Since I've incorporated notary, I'm copying in user bundles
 ADD ./ucp_bundle/ /etc/ssl/ucp_bundle/
 # When the container starts, switch to the user jenkkins
-USER jenkins
